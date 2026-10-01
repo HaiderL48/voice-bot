@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -46,7 +51,8 @@ export function AgentForm({ agent }: { agent?: Agent }) {
   const [voices, setVoices] = useState<VoiceOption[]>([]);
   const [draft, setDraft] = useState<Draft>({
     name: agent?.name ?? "",
-    greeting: agent?.greeting ?? "Thanks for calling. How can I help you today?",
+    greeting:
+      agent?.greeting ?? "Thanks for calling. How can I help you today?",
     systemPrompt:
       agent?.systemPrompt ??
       "You are warm, brief, and professional. You answer questions, offer to book an appointment, and take a message when you cannot help directly.",
@@ -68,7 +74,9 @@ export function AgentForm({ agent }: { agent?: Agent }) {
         }));
       })
       .catch((caught: unknown) => {
-        toast.error(caught instanceof Error ? caught.message : "Could not load voices");
+        toast.error(
+          caught instanceof Error ? caught.message : "Could not load voices",
+        );
       });
   }, [token]);
 
@@ -81,16 +89,21 @@ export function AgentForm({ agent }: { agent?: Agent }) {
     if (!token) return;
     setPending(true);
     try {
-      const saved = await api<Agent>(agent ? `/agents/${agent.id}` : "/agents", {
-        method: agent ? "PATCH" : "POST",
-        token,
-        body: JSON.stringify(draft),
-      });
+      const saved = await api<Agent>(
+        agent ? `/agents/${agent.id}` : "/agents",
+        {
+          method: agent ? "PATCH" : "POST",
+          token,
+          body: JSON.stringify(draft),
+        },
+      );
       toast.success(agent ? "Agent saved" : "Agent created");
       router.push(`/agents/${saved.id}`);
       router.refresh();
     } catch (caught) {
-      toast.error(caught instanceof Error ? caught.message : "Could not save agent");
+      toast.error(
+        caught instanceof Error ? caught.message : "Could not save agent",
+      );
     } finally {
       setPending(false);
     }
@@ -98,7 +111,10 @@ export function AgentForm({ agent }: { agent?: Agent }) {
 
   const voiceChoices =
     draft.voiceId && !voices.some((voice) => voice.voiceId === draft.voiceId)
-      ? [{ voiceId: draft.voiceId, name: "Current voice", labels: "" }, ...voices]
+      ? [
+          { voiceId: draft.voiceId, name: "Current voice", labels: "" },
+          ...voices,
+        ]
       : voices;
 
   return (
@@ -106,7 +122,12 @@ export function AgentForm({ agent }: { agent?: Agent }) {
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="name">Agent name</FieldLabel>
-          <Input id="name" value={draft.name} required onChange={(event) => update("name", event.target.value)} />
+          <Input
+            id="name"
+            value={draft.name}
+            required
+            onChange={(event) => update("name", event.target.value)}
+          />
         </Field>
         <Field>
           <FieldLabel htmlFor="greeting">Greeting</FieldLabel>
@@ -117,7 +138,10 @@ export function AgentForm({ agent }: { agent?: Agent }) {
             rows={3}
             onChange={(event) => update("greeting", event.target.value)}
           />
-          <FieldDescription>The first thing the caller hears. Calls split with the alternate greeting when you set one.</FieldDescription>
+          <FieldDescription>
+            The first thing the caller hears. Calls split with the alternate
+            greeting when you set one.
+          </FieldDescription>
         </Field>
         <Field>
           <FieldLabel htmlFor="greeting-b">Alternate greeting</FieldLabel>
@@ -147,7 +171,9 @@ export function AgentForm({ agent }: { agent?: Agent }) {
             placeholder="Hours, address, services, prices, booking rules."
             onChange={(event) => update("knowledge", event.target.value)}
           />
-          <FieldDescription>The agent only states facts you put here.</FieldDescription>
+          <FieldDescription>
+            The agent only states facts you put here.
+          </FieldDescription>
         </Field>
         <Field>
           <FieldLabel>Language</FieldLabel>

@@ -41,7 +41,8 @@ export async function authRoutes(app: FastifyInstance) {
           .insert(organizations)
           .values({ name: body.businessName })
           .returning();
-        if (!organization) throw new HttpError(500, "Could not create organization");
+        if (!organization)
+          throw new HttpError(500, "Could not create organization");
 
         const [user] = await tx
           .insert(users)
